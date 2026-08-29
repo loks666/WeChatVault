@@ -6,6 +6,7 @@
 [![License](https://img.shields.io/badge/%F0%9F%93%91licenses-Apache--2.0-34D058?labelColor=22863A&style=flat)](https://github.com/loks666/WeChatVault/blob/main/LICENSE)
 [![Forks](https://img.shields.io/github/forks/loks666/wechatvault?style=flat&label=%F0%9F%8F%85Forks&labelColor=800080&color=912CEE)](https://github.com/loks666/WeChatVault/forks)
 [![Language](https://img.shields.io/badge/%F0%9F%A6%80language-Rust_2021-DEA584?labelColor=8B4513&style=flat)](https://www.rust-lang.org/)
+[![LINUX DO](https://img.shields.io/badge/Community-LINUX%20DO-0FB5EB?labelColor=235389&style=flat)](https://linux.do/)
 
 </div>
 <div align="center">
@@ -187,6 +188,12 @@ src/
 ## 🌟 Stargazers over time
 
 [![Star History Chart](https://api.star-history.com/svg?repos=loks666/WeChatVault&type=Date)](https://star-history.com/#loks666/WeChatVault&Date)
+
+---
+
+## 🤝 鸣谢与友链
+
+- [LINUX DO](https://linux.do/)：真诚、友善、团结、专业的开源技术交流社区。
 
 ---
 
