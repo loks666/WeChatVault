@@ -100,17 +100,21 @@ wechatvault.exe sessions
 
 ## 📂 导出产物结构
 
-导出的文件将保存在 `exports/` 目录下：
+导出的文件按格式分文件夹清晰归类，保存在 `exports/` 目录下：
 
 ```text
 exports/
-├── 树苗_mcx720126.json          # 单人结构化 JSON
-├── 树苗_mcx720126.txt           # 单人易读排版 TXT
-├── 麦麦_wxid_iwmc135grv5n22.json
-├── 麦麦_wxid_iwmc135grv5n22.txt
-├── 全部目标合并_聊天记录.json    # 所有目标合并的完整 JSON
-├── 全部目标合并_聊天记录.txt     # 所有目标合并的按时间排版 TXT
-└── 导出统计摘要.json             # 包含各会话消息量、时间跨度的汇总摘要
+├── json/                                # 结构化 JSON 文件夹
+│   ├── 树苗_mcx720126.json
+│   ├── 麦麦_Mli_baby.json
+│   ├── 马哥_mxyxyy20200506.json
+│   ├── 羊缸子_Jessica_yangyang_.json
+│   └── 导出统计摘要.json                # 各会话消息量、时间跨度的汇总摘要
+└── txt/                                 # 可读聊天排版 TXT 文件夹
+    ├── 树苗_mcx720126.txt
+    ├── 麦麦_Mli_baby.txt
+    ├── 马哥_mxyxyy20200506.txt
+    └── 羊缸子_Jessica_yangyang_.txt
 ```
 
 ---

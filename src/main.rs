@@ -13,10 +13,7 @@ use config::AppConfig;
 use db::locator::list_accounts;
 use db::models::TargetExportResult;
 use db::query::WeChatDbSession;
-use exporter::{
-    export_combined_json, export_combined_txt, export_single_json, export_single_txt,
-    export_summary_json,
-};
+use exporter::{export_single_json, export_single_txt, export_summary_json};
 use regex::Regex;
 use std::path::PathBuf;
 
@@ -288,8 +285,13 @@ fn cmd_export(
         return Ok(());
     }
 
-    std::fs::create_dir_all(&output_dir)?;
+    let json_dir = output_dir.join("json");
+    let txt_dir = output_dir.join("txt");
+    std::fs::create_dir_all(&json_dir)?;
+    std::fs::create_dir_all(&txt_dir)?;
     println!("[*] 输出目录: {}", output_dir.display().to_string().cyan());
+    println!("    - JSON 文件夹: {}", json_dir.display().to_string().dimmed());
+    println!("    - TXT  文件夹: {}", txt_dir.display().to_string().dimmed());
 
     println!("[*] 正在连接微信数据库并获取解密密钥...");
     let mut session = match WeChatDbSession::new(db_dir, account) {
@@ -317,8 +319,7 @@ fn cmd_export(
     println!("{}", "----------------------------------------------------------------------".dimmed());
 
     let mut summary_targets: Vec<TargetExportResult> = Vec::new();
-    let mut all_combined_messages: Vec<(String, String, db::models::Message)> = Vec::new();
-    let mut all_json_messages: Vec<serde_json::Value> = Vec::new();
+    let mut total_exported_messages = 0usize;
 
     for (idx, target_item) in targets.iter().enumerate() {
         let meta = session.resolve_target(&target_item.user, Some(&target_item.label));
@@ -333,6 +334,7 @@ fn cmd_export(
 
         let messages = session.fetch_chat_messages(&meta.username)?;
         let msg_count = messages.len();
+        total_exported_messages += msg_count;
         println!(" {} 条记录", msg_count.to_string().green().bold());
 
         let start_time = messages.first().map(|m| m.time_str.clone()).unwrap_or_default();
@@ -352,13 +354,13 @@ fn cmd_export(
 
         let json_name = format!("{}.json", prefix);
         let txt_name = format!("{}.txt", prefix);
-        let json_path = output_dir.join(&json_name);
-        let txt_path = output_dir.join(&txt_name);
+        let json_path = json_dir.join(&json_name);
+        let txt_path = txt_dir.join(&txt_name);
 
-        // 1. 写入单人 JSON
+        // 1. 写入单人 JSON 到 json/ 文件夹
         export_single_json(&json_path, &meta, &self_info, &messages)?;
 
-        // 2. 写入单人 TXT
+        // 2. 写入单人 TXT 到 txt/ 文件夹
         export_single_txt(&txt_path, &meta, &self_info, &messages)?;
 
         summary_targets.push(TargetExportResult {
@@ -369,63 +371,24 @@ fn cmd_export(
             message_count: msg_count,
             start_time,
             end_time,
-            json_file: json_name,
-            txt_file: txt_name,
+            json_file: format!("json/{}", json_name),
+            txt_file: format!("txt/{}", txt_name),
         });
-
-        for m in messages {
-            all_combined_messages.push((meta.display_name.clone(), meta.username.clone(), m.clone()));
-            all_json_messages.push(serde_json::json!({
-                "chat_name": meta.display_name,
-                "chat_username": meta.username,
-                "local_id": m.local_id,
-                "sort_seq": m.sort_seq,
-                "type": m.msg_type,
-                "type_code": m.type_code,
-                "is_self": m.is_self,
-                "sender_name": m.sender_name,
-                "create_time": m.create_time,
-                "time_str": m.time_str,
-                "content": m.content,
-            }));
-        }
     }
 
-    // 写入合并文件
-    if targets.len() > 1 && !all_combined_messages.is_empty() {
-        all_combined_messages.sort_by_key(|(_, _, m)| (m.create_time, m.local_id));
-
-        let combined_json_path = output_dir.join("全部目标合并_聊天记录.json");
-        export_combined_json(
-            &combined_json_path,
-            &self_info,
-            &summary_targets,
-            &all_json_messages,
-        )?;
-
-        let combined_txt_path = output_dir.join("全部目标合并_聊天记录.txt");
-        export_combined_txt(
-            &combined_txt_path,
-            &self_info,
-            summary_targets.len(),
-            all_combined_messages.len(),
-            &all_combined_messages,
-        )?;
-    }
-
-    // 写入汇总摘要
-    let summary_path = output_dir.join("导出统计摘要.json");
+    // 写入汇总摘要 (放在 json/ 文件夹以及根输出目录)
+    let summary_path = json_dir.join("导出统计摘要.json");
     export_summary_json(
         &summary_path,
         &self_info,
         &summary_targets,
-        all_combined_messages.len(),
+        total_exported_messages,
     )?;
 
     println!("{}", "----------------------------------------------------------------------".dimmed());
     println!("{}", "🎉 导出完成！".green().bold());
     println!("[+] 导出目标数: {} 个", summary_targets.len().to_string().cyan());
-    println!("[+] 导出总消息: {} 条", all_combined_messages.len().to_string().cyan());
+    println!("[+] 导出总消息: {} 条", total_exported_messages.to_string().cyan());
     println!("[+] 文件保存在: {}\n", output_dir.canonicalize().unwrap_or(output_dir).display().to_string().bright_yellow());
 
     for st in &summary_targets {
