@@ -1,4 +1,24 @@
-# 🚀 WeChatVault (微信聊天记录极速解密与导出工具)
+<h1 align="center">🚀 WeChatVault【微信本地聊天记录极速导出】</h1>
+
+<div align="center">
+
+[![Stars](https://img.shields.io/github/stars/loks666/WeChatVault?style=flat&label=%F0%9F%8C%9Fstars&labelColor=ff4f4f&color=ff8383)](https://github.com/loks666/WeChatVault/stargazers)
+[![Release](https://img.shields.io/github/v/release/loks666/WeChatVault?label=%F0%9F%9A%80release&labelColor=008B8B&color=00CCCC)](https://github.com/loks666/WeChatVault/releases)
+[![License](https://img.shields.io/badge/📑license-Apache--2.0-34D058?labelColor=22863A&style=flat)](https://github.com/loks666/WeChatVault/blob/main/LICENSE)
+[![Forks](https://img.shields.io/github/forks/loks666/WeChatVault?style=flat&label=%F0%9F%8F%85Forks&labelColor=800080&color=912CEE)](https://github.com/loks666/WeChatVault/network/members)
+[![Rust](https://img.shields.io/badge/language-Rust_2021-DEA584?logo=rust&logoColor=white&style=flat)](https://www.rust-lang.org/)
+
+</div>
+
+<div align="center">
+
+### 微信 4.x / 3.x 本地数据库极速解密与聊天记录双格式导出神器 (Rust 原生实现)
+
+**免安装任何依赖 · 毫秒级内存提密 · 增量 WAL 实时合并 · JSON 与 TXT 双格式分流**
+
+</div>
+
+---
 
 **WeChatVault** 是一款基于 **Rust** 编写的高性能、轻量级微信 4.x / 3.x 本地数据库解密与聊天记录导出工具。
 
@@ -13,20 +33,25 @@
 - 🔑 **自动内存提密**：支持跨进程扫描 `Weixin.exe` 进程内存获取 SQLCipher 4 数据库密钥，并自动本地安全缓存。
 - 🔥 **WCDB WAL 热数据合并**：实时解析并覆盖 WAL 日志帧，提取刚刚发送或接收的最新消息。
 - 👥 **多账号与多开支持**：自动探测本地微信数据目录，支持在多个登录账号之间灵活切换与指定。
-- 📝 **双格式导出**：
-  - **JSON 格式**：结构化数据，适合大模型微调、RAG 知识库与数据分析。
-  - **TXT 格式**：排版清晰的聊天文本视图，带时间戳、发送者区分与内容缩进。
+- 📝 **双格式分流导出**：
+  - **`exports/json/`**：结构化数据，适合大模型微调、RAG 知识库与数据分析。
+  - **`exports/txt/`**：排版清晰的聊天文本视图，带时间戳、发送者区分与内容缩进。
 
 ---
 
 ## 🛠️ 快速上手
 
-### 1. 编译构建
+### 1. 下载或编译构建
 
+#### 方式 A：直接下载 Release（推荐）
+前往 [GitHub Releases](https://github.com/loks666/WeChatVault/releases) 下载最新的 `wechatvault.exe` 或压缩包解压即用。
+
+#### 方式 B：源码编译构建
 确保已安装 Rust 工具链（1.75+）：
 
 ```bash
-cd C:\Users\Administrator\Documents\Project\Github\WeChatVault
+git clone https://github.com/loks666/WeChatVault.git
+cd WeChatVault
 
 # 编译生成 Release 单文件可执行程序
 cargo build --release
@@ -67,33 +92,33 @@ cargo build --release
 
 #### ① 直接导出聊天记录（读取 `config.json`）
 ```bash
-wechatvault.exe
-# 或
+.\wechatvault.exe
+# 或源码运行
 cargo run --release
 ```
 
 #### ② 命令行指定参数导出
 ```bash
 # 导出指定微信号/备注，保存到 output 目录
-wechatvault.exe export --targets "wxid_example_001,李四,filehelper" --output "my_exports"
+.\wechatvault.exe export --targets "wxid_example_001,李四,filehelper" --output "my_exports"
 
 # 多开时指定本人微信账号
-wechatvault.exe export --account "wxid_myaccount" --targets "wxid_example_001"
+.\wechatvault.exe export --account "wxid_myaccount" --targets "wxid_example_001"
 ```
 
 #### ③ 查看本地所有微信账号
 ```bash
-wechatvault.exe list-accounts
+.\wechatvault.exe list-accounts
 ```
 
 #### ④ 搜索好友微信号 / wxid
 ```bash
-wechatvault.exe search "张三"
+.\wechatvault.exe search "张三"
 ```
 
 #### ⑤ 查看最近活跃会话
 ```bash
-wechatvault.exe sessions
+.\wechatvault.exe sessions
 ```
 
 ---
@@ -161,6 +186,12 @@ src/
     ├── json.rs          # 结构化 JSON 导出 (单人 / 摘要)
     └── txt.rs           # 优雅排版 TXT 文本导出
 ```
+
+---
+
+## 🌟 Stargazers over time
+
+[![Star History Chart](https://api.star-history.com/svg?repos=loks666/WeChatVault&type=Date)](https://star-history.com/#loks666/WeChatVault&Date)
 
 ---
 
