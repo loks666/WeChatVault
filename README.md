@@ -2,11 +2,12 @@
 
 <div align="center">
 
-[![Stars](https://img.shields.io/github/stars/loks666/WeChatVault?style=flat&label=%F0%9F%8C%9Fstars&labelColor=ff4f4f&color=ff8383)](https://github.com/loks666/WeChatVault/stargazers)
-[![Release](https://img.shields.io/github/v/release/loks666/WeChatVault?label=%F0%9F%9A%80release&labelColor=008B8B&color=00CCCC)](https://github.com/loks666/WeChatVault/releases)
-[![License](https://img.shields.io/badge/📑license-Apache--2.0-34D058?labelColor=22863A&style=flat)](https://github.com/loks666/WeChatVault/blob/main/LICENSE)
-[![Forks](https://img.shields.io/github/forks/loks666/WeChatVault?style=flat&label=%F0%9F%8F%85Forks&labelColor=800080&color=912CEE)](https://github.com/loks666/WeChatVault/network/members)
-[![Rust](https://img.shields.io/badge/language-Rust_2021-DEA584?logo=rust&logoColor=white&style=flat)](https://www.rust-lang.org/)
+[![Stars](https://img.shields.io/github/stars/loks666/WeChatVault?style=flat&logo=github&color=ff8383)](https://github.com/loks666/WeChatVault/stargazers)
+[![Release](https://img.shields.io/github/v/release/loks666/WeChatVault?logo=github&color=00CCCC)](https://github.com/loks666/WeChatVault/releases)
+[![License](https://img.shields.io/badge/License-Apache_2.0-34D058?style=flat)](https://github.com/loks666/WeChatVault/blob/main/LICENSE)
+[![Forks](https://img.shields.io/github/forks/loks666/WeChatVault?style=flat&logo=github&color=912CEE)](https://github.com/loks666/WeChatVault/network/members)
+[![Rust](https://img.shields.io/badge/Language-Rust_2021-DEA584?logo=rust&logoColor=white&style=flat)](https://www.rust-lang.org/)
+[![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?logo=windows&logoColor=white&style=flat)](https://github.com/loks666/WeChatVault/releases)
 
 </div>
 
