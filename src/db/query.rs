@@ -469,60 +469,82 @@ impl WeChatDbSession {
         map
     }
 
-    pub fn resolve_target(&self, target_input: &str) -> TargetMeta {
+    pub fn resolve_target(&self, target_input: &str, custom_label: Option<&str>) -> TargetMeta {
         let query = target_input.trim();
+        let fallback_label = custom_label.unwrap_or(query).trim().to_string();
+
         if query.is_empty() {
             return TargetMeta {
                 query: String::new(),
-                label: String::new(),
+                label: fallback_label,
                 username: String::new(),
                 display_name: String::new(),
                 alias: String::new(),
             };
         }
 
-        // 1. 精确匹配
+        // 1. 精确匹配 (username 或 alias)
         if let Some(c) = self.get_contact_by_username(query) {
+            let nick = c.display_name();
+            let display = if !nick.is_empty() && nick != c.username {
+                nick
+            } else if !fallback_label.is_empty() && fallback_label != c.username {
+                fallback_label.clone()
+            } else {
+                c.username.clone()
+            };
+
             return TargetMeta {
                 query: query.to_string(),
-                label: query.to_string(),
+                label: fallback_label,
                 username: c.username.clone(),
-                display_name: c.display_name(),
-                alias: c.alias,
+                display_name: display,
+                alias: if !c.alias.is_empty() { c.alias } else { query.to_string() },
             };
         }
 
         // 2. 特殊内置会话
         let low = query.to_lowercase();
         if matches!(low.as_str(), "filehelper" | "fmessage" | "medianote" | "newsapp") {
+            let display = if !fallback_label.is_empty() { fallback_label.clone() } else { query.to_string() };
             return TargetMeta {
                 query: query.to_string(),
-                label: query.to_string(),
+                label: fallback_label,
                 username: query.to_string(),
-                display_name: query.to_string(),
+                display_name: display,
                 alias: query.to_string(),
             };
         }
 
-        // 3. 搜索匹配
+        // 3. 搜索匹配 (昵称 / 备注 / 微信号模糊查找)
         let hits = self.search_contacts(query);
         if let Some(first) = hits.first() {
+            let nick = first.display_name();
+            let display = if !nick.is_empty() && nick != first.username {
+                nick
+            } else if !fallback_label.is_empty() && fallback_label != first.username {
+                fallback_label.clone()
+            } else {
+                first.username.clone()
+            };
+
             return TargetMeta {
                 query: query.to_string(),
-                label: query.to_string(),
+                label: fallback_label,
                 username: first.username.clone(),
-                display_name: first.display_name(),
-                alias: first.alias.clone(),
+                display_name: display,
+                alias: if !first.alias.is_empty() { first.alias.clone() } else { query.to_string() },
             };
         }
 
         // 4. 原样返回
+        let display = if !fallback_label.is_empty() { fallback_label.clone() } else { query.to_string() };
         TargetMeta {
             query: query.to_string(),
-            label: query.to_string(),
+            label: fallback_label,
             username: query.to_string(),
-            display_name: query.to_string(),
-            alias: String::new(),
+            display_name: display,
+            alias: query.to_string(),
         }
     }
 

@@ -274,9 +274,10 @@ fn cmd_export(
         .or(cli.account.as_deref())
         .or(config.my_account.as_deref());
 
-    let targets = override_targets
-        .cloned()
-        .unwrap_or_else(|| config.target_users.clone());
+    let targets: Vec<config::TargetItem> = match override_targets {
+        Some(tg_strs) => tg_strs.iter().map(|s| config::TargetItem::from_raw(s)).collect(),
+        None => config.target_users.clone(),
+    };
 
     let output_str = override_output
         .unwrap_or(&config.output_dir);
@@ -319,14 +320,15 @@ fn cmd_export(
     let mut all_combined_messages: Vec<(String, String, db::models::Message)> = Vec::new();
     let mut all_json_messages: Vec<serde_json::Value> = Vec::new();
 
-    for (idx, target_query) in targets.iter().enumerate() {
-        let meta = session.resolve_target(target_query);
+    for (idx, target_item) in targets.iter().enumerate() {
+        let meta = session.resolve_target(&target_item.user, Some(&target_item.label));
         print!(
-            "[{}/{}] 正在导出: {} ({})...",
+            "[{}/{}] 正在导出: {} ({}) [配置: {}]...",
             idx + 1,
             targets.len(),
             meta.display_name.bright_white(),
-            meta.username.yellow()
+            meta.username.yellow(),
+            target_item.label.cyan()
         );
 
         let messages = session.fetch_chat_messages(&meta.username)?;
@@ -336,9 +338,15 @@ fn cmd_export(
         let start_time = messages.first().map(|m| m.time_str.clone()).unwrap_or_default();
         let end_time = messages.last().map(|m| m.time_str.clone()).unwrap_or_default();
 
+        let display_for_file = if !meta.label.is_empty() && meta.label != meta.username {
+            &meta.label
+        } else {
+            &meta.display_name
+        };
+
         let prefix = clean_filename(&format!(
             "{}_{}",
-            meta.display_name,
+            display_for_file,
             if !meta.alias.is_empty() { &meta.alias } else { &meta.username }
         ));
 
@@ -354,7 +362,7 @@ fn cmd_export(
         export_single_txt(&txt_path, &meta, &self_info, &messages)?;
 
         summary_targets.push(TargetExportResult {
-            target: target_query.clone(),
+            target: format!("{}: {}", target_item.label, target_item.user),
             name: meta.display_name.clone(),
             username: meta.username.clone(),
             alias: meta.alias.clone(),
