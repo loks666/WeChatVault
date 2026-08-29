@@ -43,19 +43,19 @@ cargo build --release
 ```json
 {
   "my_account": null,
-  "target_users": [
-    "mcx720126",
-    "wxid_iwmc135grv5n22",
-    "马哥",
-    "filehelper"
-  ],
+  "target_users": {
+    "张三": "wxid_example_001",
+    "李四": "wx_custom_alias",
+    "王五": "wxid_example_003",
+    "文件传输助手": "filehelper"
+  },
   "output_dir": "exports",
   "custom_db_dir": null
 }
 ```
 
-- **`my_account`**：当前登录的微信账号（`null` 为自动选择最近活跃的账号，多开时可填微信号如 `"bad-boy945"` 或 wxid）。
-- **`target_users`**：需要导出的目标列表（支持微信号、`wxid_xxx`、好友微信昵称、备注名）。
+- **`my_account`**：当前登录的本人微信账号（`null` 为自动选择最近活跃的账号，多开时可指定微信号或 wxid，如 `"wxid_myaccount"`）。
+- **`target_users`**：需要导出的目标列表（支持 `{"备注/昵称": "微信号/wxid"}` 键值对，或字符串数组 `["微信号1", "微信号2"]`）。
 - **`output_dir`**：导出产物保存目录（默认 `exports`）。
 - **`custom_db_dir`**：微信数据目录（`null` 为自动检测）。
 
@@ -75,10 +75,10 @@ cargo run --release
 #### ② 命令行指定参数导出
 ```bash
 # 导出指定微信号/备注，保存到 output 目录
-wechatvault.exe export --targets "mcx720126,马哥,filehelper" --output "my_exports"
+wechatvault.exe export --targets "wxid_example_001,李四,filehelper" --output "my_exports"
 
 # 多开时指定本人微信账号
-wechatvault.exe export --account "bad-boy945" --targets "mcx720126"
+wechatvault.exe export --account "wxid_myaccount" --targets "wxid_example_001"
 ```
 
 #### ③ 查看本地所有微信账号
@@ -105,16 +105,16 @@ wechatvault.exe sessions
 ```text
 exports/
 ├── json/                                # 结构化 JSON 文件夹
-│   ├── 树苗_mcx720126.json
-│   ├── 麦麦_Mli_baby.json
-│   ├── 马哥_mxyxyy20200506.json
-│   ├── 羊缸子_Jessica_yangyang_.json
+│   ├── 张三_wxid_example_001.json
+│   ├── 李四_wx_custom_alias.json
+│   ├── 王五_wxid_example_003.json
+│   ├── 文件传输助手_filehelper.json
 │   └── 导出统计摘要.json                # 各会话消息量、时间跨度的汇总摘要
 └── txt/                                 # 可读聊天排版 TXT 文件夹
-    ├── 树苗_mcx720126.txt
-    ├── 麦麦_Mli_baby.txt
-    ├── 马哥_mxyxyy20200506.txt
-    └── 羊缸子_Jessica_yangyang_.txt
+    ├── 张三_wxid_example_001.txt
+    ├── 李四_wx_custom_alias.txt
+    ├── 王五_wxid_example_003.txt
+    └── 文件传输助手_filehelper.txt
 ```
 
 ---
@@ -125,14 +125,14 @@ exports/
 ```text
 ================================================================================
 微信聊天记录导出
-导出对象: 树苗 (账号: wxid_id8sfmx3jcjr22, 微信号: mcx720126)
+导出对象: 张三 (账号: wxid_example_001, 微信号: wx_custom_alias)
 当前用户: 小明 (wxid_myaccount)
 消息总数: 1520 条
 时间范围: 2024-01-01 10:00:00 至 2026-08-29 12:00:00
 导出时间: 2026-08-29 12:45:00
 ================================================================================
 
-[2026-08-29 10:01:23] 树苗:
+[2026-08-29 10:01:23] 张三:
   早上好！
 
 [2026-08-29 10:02:15] 我:
@@ -158,7 +158,7 @@ src/
 │   ├── models.rs        # 消息、联系人、会话等结构体定义
 │   └── query.rs         # 多分片 message_*.db (Msg_<md5>) 跨库查询与 SenderID 映射
 └── exporter/
-    ├── json.rs          # 结构化 JSON 导出 (单人 / 合并 / 摘要)
+    ├── json.rs          # 结构化 JSON 导出 (单人 / 摘要)
     └── txt.rs           # 优雅排版 TXT 文本导出
 ```
 

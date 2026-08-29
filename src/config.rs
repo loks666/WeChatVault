@@ -117,10 +117,10 @@ impl Default for AppConfig {
         Self {
             my_account: None,
             target_users: vec![
-                TargetItem::new("树苗", "mcx720126"),
-                TargetItem::new("麦麦", "Mli_baby"),
-                TargetItem::new("马哥", "mxyxyy20200506"),
-                TargetItem::new("羊缸子", "Jessica_yangyang_"),
+                TargetItem::new("张三", "wxid_example_001"),
+                TargetItem::new("李四", "wx_custom_alias"),
+                TargetItem::new("王五", "wxid_example_003"),
+                TargetItem::new("文件传输助手", "filehelper"),
             ],
             output_dir: default_output_dir(),
             custom_db_dir: None,

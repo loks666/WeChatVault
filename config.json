@@ -1,10 +1,10 @@
 {
   "my_account": null,
   "target_users": {
-    "树苗": "mcx720126",
-    "麦麦": "Mli_baby",
-    "马哥": "mxyxyy20200506",
-    "羊缸子": "Jessica_yangyang_"
+    "张三": "wxid_example_001",
+    "李四": "wx_custom_alias",
+    "王五": "wxid_example_003",
+    "文件传输助手": "filehelper"
   },
   "output_dir": "exports",
   "custom_db_dir": null
