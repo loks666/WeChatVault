@@ -410,7 +410,7 @@ impl WeChatDbSession {
                         Err(_) => continue,
                     };
 
-                    let rows = stmt.query_map([limit], |r| {
+                    let rows = stmt.query_map([limit as i64], |r| {
                         let u: String = r.get(0)?;
                         let unread: i32 = r.get(1)?;
                         let summary: String = r.get(2).unwrap_or_default();
@@ -533,7 +533,7 @@ impl WeChatDbSession {
         } else {
             let mut hasher = Md5::new();
             hasher.update(user_or_wxid.as_bytes());
-            format!("{:x}", hasher.finalize())
+            hex::encode(hasher.finalize())
         };
 
         let target_table = format!("Msg_{}", target_md5);

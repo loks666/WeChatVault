@@ -7,7 +7,7 @@ description = "微信本地数据库聊天记录极速解密与导出工具 (Rus
 
 [dependencies]
 # Win32 系统底层 API
-windows-sys = { version = "0.59", features = [
+windows-sys = { version = "0.61", features = [
     "Win32_Foundation",
     "Win32_System_Diagnostics_ToolHelp",
     "Win32_System_Diagnostics_Debug",
@@ -15,28 +15,28 @@ windows-sys = { version = "0.59", features = [
     "Win32_System_Threading",
     "Win32_System_ProcessStatus",
 ] }
-winreg = "0.52"
+winreg = "0.56"
 
 # 密码学与哈希算法 (纯 Rust，无外部依赖)
-aes = "0.8"
-cbc = "0.1"
-hmac = "0.12"
-sha2 = "0.10"
-md-5 = "0.10"
-pbkdf2 = { version = "0.12", default-features = false, features = ["hmac"] }
+aes = "0.9"
+cbc = "0.2"
+hmac = "0.13"
+sha2 = "0.11"
+md-5 = "0.11"
+pbkdf2 = { version = "0.13", default-features = false, features = ["hmac"] }
 hex = "0.4"
 
 # 静态内置 SQLite3 引擎 (bundled 模式，无需系统环境)
-rusqlite = { version = "0.32", features = ["bundled"] }
+rusqlite = { version = "0.40", features = ["bundled"] }
 
 # 序列化与命令行工具
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-clap = { version = "4.5", features = ["derive"] }
+clap = { version = "4.6", features = ["derive"] }
 chrono = { version = "0.4", features = ["serde"] }
-regex = "1.10"
+regex = "1.13"
 byteorder = "1.5"
-colored = "2.1"
+colored = "3.1"
 anyhow = "1.0"
 walkdir = "2.5"
-rayon = "1.10"
+rayon = "1.12"

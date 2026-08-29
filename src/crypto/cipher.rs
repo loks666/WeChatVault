@@ -1,7 +1,8 @@
 use aes::Aes256;
 use anyhow::Result;
 use byteorder::{ByteOrder, LittleEndian};
-use cbc::cipher::{BlockDecryptMut, KeyIvInit};
+use cbc::cipher::{BlockModeDecrypt, KeyIvInit};
+use hmac::digest::KeyInit;
 use hmac::{Hmac, Mac};
 use sha2::Sha512;
 use std::fs::File;
@@ -26,7 +27,7 @@ pub fn aes_cbc_decrypt(key: &[u8], iv: &[u8], ciphertext: &[u8]) -> Vec<u8> {
     }
     let decryptor = Aes256CbcDec::new_from_slices(key, iv).expect("Invalid key or IV length");
     decryptor
-        .decrypt_padded_mut::<cbc::cipher::block_padding::NoPadding>(&mut buf)
+        .decrypt_padded::<cbc::cipher::block_padding::NoPadding>(&mut buf)
         .expect("AES CBC block decryption error");
     buf
 }
@@ -62,7 +63,7 @@ pub fn verify_enc_key(enc_key: &[u8], page1: &[u8], explicit_salt: Option<&[u8]>
     let hmac_data = &page1[16..PAGE_SZ - RESERVE_SZ + 16];
     let stored_hmac = &page1[PAGE_SZ - 64..PAGE_SZ];
 
-    let mut mac = <HmacSha512 as Mac>::new_from_slice(&mac_key).expect("HMAC key length");
+    let mut mac = HmacSha512::new_from_slice(&mac_key).expect("HMAC key length");
     mac.update(hmac_data);
 
     let mut page_num_bytes = [0u8; 4];
