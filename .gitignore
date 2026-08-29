@@ -1,0 +1,21 @@
+# Rust 编译产物
+target/
+**/*.rs.bk
+*.pdb
+
+# 微信聊天记录导出目录与解密缓存
+exports/
+*.stamp
+keys.json
+.keys_cache/
+workdir/
+*.db
+*.db-wal
+*.db-shm
+
+# 编辑器与系统文件
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
